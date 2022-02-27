@@ -18,7 +18,7 @@ import android.widget.Toast;
 public class menubar extends AppCompatActivity {
     private Context context=this;
     Databasehelper db;
-    EditText e1,e2,e3;
+    EditText e1,e2,e3,e4;
     Button b1,b2,b3,b4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,16 +27,18 @@ public class menubar extends AppCompatActivity {
         e1=findViewById(R.id.ed1);
         e2=findViewById(R.id.ed2);
         e3=findViewById(R.id.ed3);
+        e4=findViewById(R.id.ed4);
         b1=findViewById(R.id.ins);
         b2=findViewById(R.id.view);
         Button B1=findViewById(R.id.button);
-        Button b3=findViewById(R.id.update);
-        Button b4=findViewById(R.id.del);
+        b3=findViewById(R.id.update);
+        b4=findViewById(R.id.del);
         db=new Databasehelper(this);
-        updateData();
-        deleteData();
+
         AddData();
         viewData();
+        updateData();
+        deleteData();
 
 
 
@@ -69,27 +71,45 @@ public class menubar extends AppCompatActivity {
     }
 
     private void deleteData() {
-
         b4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Integer delrows=db.deleteData(e4.getText().toString());
+                if(delrows >0)
+                {
+                    Toast.makeText(menubar.this, "deleted", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(menubar.this, "Can't deleted", Toast.LENGTH_SHORT).show();
+                    
+                }
             }
         });
-
-
     }
 
     private void updateData() {
         b3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                
+                boolean isup=db.updateData(e1.getText().toString(),
+                        e2.getText().toString(),
+                        e3.getText().toString());
+                if(isup==true){
+                    Toast.makeText(menubar.this, "updated", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(menubar.this, "not updated", Toast.LENGTH_SHORT).show();
+                }
+                
+                
+                
             }
         });
-
-
+        
+        
     }
+
 
     private void viewData() {
 
@@ -109,9 +129,9 @@ public class menubar extends AppCompatActivity {
                     stringBuffer.append("ID :"+res.getString(0)+"\n");
                     stringBuffer.append("NAME :"+res.getString(1)+"\n");
                     stringBuffer.append("AGE :"+res.getString(2)+"\n");
-                    stringBuffer.append("GENDER :"+res.getString(3)+"\n");
+                    stringBuffer.append("GENDER :"+res.getString(3)+"\n\n");
                 }
-                showmessage("data",stringBuffer.toString());
+                showmessage("Data",stringBuffer.toString());
 
             }
 
@@ -123,7 +143,12 @@ public class menubar extends AppCompatActivity {
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle(title);
-        builder.setMessage(message);
+        builder.setMessage(message).setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
         builder.show();
 
     }
@@ -133,19 +158,22 @@ public class menubar extends AppCompatActivity {
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String s1 = e1.getText().toString();
+                String s2 = e2.getText().toString();
+                String s3 = e3.getText().toString();
+                if (s1.isEmpty() || s2.isEmpty() || s3.isEmpty()) {
+                    Toast.makeText(menubar.this, "Error :Insert all fields", Toast.LENGTH_SHORT).show();
+                } else {
 
-                boolean isinserted = db.insertData(e1.getText().toString(),
-                        e2.getText().toString(),
-                        e3.getText().toString());
-                if(isinserted)
-                {
-                    Toast.makeText(menubar.this, "Data inserted", Toast.LENGTH_SHORT).show();
+                    boolean isinserted = db.insertData(s1,
+                            s2, s3
+                    );
+                    if (isinserted) {
+                        Toast.makeText(menubar.this, "Data inserted", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(menubar.this, "data not inserted", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                else
-                {
-                    Toast.makeText(menubar.this, "data not inserted", Toast.LENGTH_SHORT).show();
-                }
-
             }
         });
 

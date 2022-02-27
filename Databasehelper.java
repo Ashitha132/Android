@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.Editable;
 
 class Databasehelper extends SQLiteOpenHelper {
    public static final String databasename="Dance.db";
@@ -48,5 +49,23 @@ class Databasehelper extends SQLiteOpenHelper {
         SQLiteDatabase db=this.getWritableDatabase();
         Cursor res=db.rawQuery("select * from "+tablename,null);
         return res;
+    }
+
+
+    public Integer deleteData(String id){
+        SQLiteDatabase db=this.getWritableDatabase();
+        return db.delete(tablename,"ID=?",new String[]{id});
+
+    }
+
+    public boolean updateData(String name, String age, String gender) {
+        SQLiteDatabase db=this.getWritableDatabase();
+        ContentValues c=new ContentValues();
+        c.put(col1,name);
+        c.put(col2,age);
+        c.put(col3,gender);
+        db.update(tablename,c,"NAME=?",new String[]{name});
+        return true;
+
     }
 }
